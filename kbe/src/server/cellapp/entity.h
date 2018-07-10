@@ -300,6 +300,12 @@ public:
 	bool getRandomPoints(std::vector<Position3D>& outPoints, const Position3D& centerPos, float maxRadius, uint32 maxPoints, int8 layer);
 	DECLARE_PY_MOTHOD_ARG4(pyGetRandomPoints, PyObject_ptr, float, uint32, int8);
 
+	/**
+	entity判断终点是否可达
+	*/
+	bool isPointAccessible(const Position3D& srcPoint, const Position3D& dstPoint,  int8 layer);
+	DECLARE_PY_MOTHOD_ARG3(pyIsPointAccessible, PyObject_ptr, PyObject_ptr, int8);
+
 	/** 
 		entity移动到某个点 
 	*/

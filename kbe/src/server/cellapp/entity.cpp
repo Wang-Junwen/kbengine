@@ -55,6 +55,7 @@ SCRIPT_METHOD_DECLARE("canNavigate",				pycanNavigate,					METH_VARARGS,				0)
 SCRIPT_METHOD_DECLARE("navigatePathPoints",			pyNavigatePathPoints,			METH_VARARGS,				0)
 SCRIPT_METHOD_DECLARE("navigate",					pyNavigate,						METH_VARARGS,				0)
 SCRIPT_METHOD_DECLARE("getRandomPoints",			pyGetRandomPoints,				METH_VARARGS,				0)
+SCRIPT_METHOD_DECLARE("isPointAccessible",			pyIsPointAccessible,			METH_VARARGS,				0)
 SCRIPT_METHOD_DECLARE("moveToPoint",				pyMoveToPoint,					METH_VARARGS,				0)
 SCRIPT_METHOD_DECLARE("moveToEntity",				pyMoveToEntity,					METH_VARARGS,				0)
 SCRIPT_METHOD_DECLARE("accelerate",					pyAccelerate,					METH_VARARGS,				0)
@@ -2684,6 +2685,72 @@ PyObject* Entity::pyGetRandomPoints(PyObject_ptr pyCenterPos, float maxRadius, u
 	}
 
 	return pyList;
+}
+
+//-------------------------------------------------------------------------------------
+bool Entity::isPointAccessible(const Position3D& dstPos, const Position3D& srcPos,int8 layer)
+{
+	SpaceMemory* pSpace = SpaceMemorys::findSpace(spaceID());
+	if (pSpace == NULL || !pSpace->isGood())
+	{
+		ERROR_MSG(fmt::format("Entity::isPointAccessible(): not found space({}), entityID({})!\n",
+			spaceID(), id()));
+
+		return false;
+	}
+
+	NavigationHandlePtr pNavHandle = pSpace->pNavHandle();
+
+	if (!pNavHandle)
+	{
+		WARNING_MSG(fmt::format("Entity::isPointAccessible(): space({}), entityID({}), not found navhandle!\n",
+			spaceID(), id()));
+		return false;
+	}
+	std::vector<Position3D> outPaths;
+	return pNavHandle->findStraightPath(layer, srcPos, dstPos, outPaths) >= 0;
+}
+
+//-------------------------------------------------------------------------------------
+PyObject* Entity::pyIsPointAccessible( PyObject_ptr pyDstPos, PyObject_ptr pySrcPos, int8 layer)
+{
+	Position3D srcPos;
+	Position3D dstPos;
+
+
+	if (!PySequence_Check(pySrcPos))
+	{
+		PyErr_Format(PyExc_TypeError, "%s::isPointAccessible: args1(srcPos) not is PySequence!", scriptName());
+		PyErr_PrintEx(0);
+		return 0;
+	}
+
+	if (!PySequence_Check(pyDstPos))
+	{
+		PyErr_Format(PyExc_TypeError, "%s::isPointAccessible: args2(dstPos) not is PySequence!", scriptName());
+		PyErr_PrintEx(0);
+		return 0;
+	}
+
+	if (PySequence_Size(pySrcPos) != 3)
+	{
+		PyErr_Format(PyExc_TypeError, "%s::isPointAccessible: args1(srcPos) invalid!", scriptName());
+		PyErr_PrintEx(0);
+		return 0;
+	}
+
+	if (PySequence_Size(pyDstPos) != 3)
+	{
+		PyErr_Format(PyExc_TypeError, "%s::isPointAccessible: args2(dstPos) invalid!", scriptName());
+		PyErr_PrintEx(0);
+		return 0;
+	}
+
+	// 将坐标信息提取出来
+	script::ScriptVector3::convertPyObjectToVector3(srcPos, pySrcPos);
+	script::ScriptVector3::convertPyObjectToVector3(dstPos, pyDstPos);
+
+	return PyBool_FromLong(isPointAccessible( dstPos, srcPos, layer));
 }
 
 //-------------------------------------------------------------------------------------
