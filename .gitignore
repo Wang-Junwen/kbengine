@@ -19,6 +19,11 @@ logs/
 *.pdb
 *.chw
 
+# others
+
+.idea
+.vscode
+
 # -------------[ OS generated ]------------------------ #
 .DS_Store
 .DS_Store?
