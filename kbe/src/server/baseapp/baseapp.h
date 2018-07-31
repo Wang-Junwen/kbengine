@@ -91,6 +91,8 @@ public:
 	*/
 	void onCellAppDeath(Network::Channel * pChannel);
 
+	void onBaseAppDeath(Network::Channel * pChannel, COMPONENT_ID cid);
+
 	/** 网络接口
 		dbmgr告知已经启动的其他baseapp或者cellapp的地址
 		当前app需要主动的去与他们建立连接

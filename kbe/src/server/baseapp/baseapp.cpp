@@ -652,6 +652,44 @@ void Baseapp::finalise()
 }
 
 //-------------------------------------------------------------------------------------
+void Baseapp::onBaseAppDeath(Network::Channel * pChannel, COMPONENT_ID cid)
+{
+	if (pChannel && pChannel->isExternal())
+		return;
+
+	if (shuttingdown_ != SHUTDOWN_STATE_STOP)
+	{
+		return;
+	}
+
+	PyObject* pyarg = PyTuple_New(1);
+
+	PyObject* pyobj = PyTuple_New(3);
+
+	const Network::Address& addr = pChannel->pEndPoint()->addr();
+	PyTuple_SetItem(pyobj, 0, PyLong_FromUnsignedLong(addr.ip));
+	PyTuple_SetItem(pyobj, 1, PyLong_FromUnsignedLong(addr.port));
+	PyTuple_SetItem(pyobj, 2, PyLong_FromUnsignedLongLong(cid));
+	PyTuple_SetItem(pyarg, 0, pyobj);
+
+	SCRIPT_ERROR_CHECK();
+
+	{
+		SCOPED_PROFILE(SCRIPTCALL_PROFILE);
+		PyObject* pyResult = PyObject_CallMethod(getEntryScript().get(),
+			const_cast<char*>("onBaseAppDeath"),
+			const_cast<char*>("O"),
+			pyarg);
+
+		Py_DECREF(pyarg);
+
+		if (pyResult != NULL)
+			Py_DECREF(pyResult);
+		else
+			SCRIPT_ERROR_CHECK();
+	}
+}
+
 void Baseapp::onCellAppDeath(Network::Channel * pChannel)
 {
 	if(pChannel && pChannel->isExternal())
@@ -789,6 +827,11 @@ void Baseapp::onChannelDeregister(Network::Channel * pChannel)
 			if(cinfo->componentType == CELLAPP_TYPE)
 			{
 				onCellAppDeath(pChannel);
+			}
+			if (cinfo->componentType == BASEAPP_TYPE)
+			{
+				onBaseAppDeath(pChannel, cinfo->cid);
+				
 			}
 		}
 	}
