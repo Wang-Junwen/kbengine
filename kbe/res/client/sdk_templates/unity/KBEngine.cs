@@ -1290,6 +1290,13 @@
 			bool dirHasChanged = false;
 			
 			if (playerEntity.needSynData) {
+				
+				position = playerEntity.position;
+                direction = playerEntity.direction;
+				
+				posHasChanged = Vector3.Distance(playerEntity._entityLastLocalPos, position) > 0.001f;
+				dirHasChanged = Vector3.Distance(playerEntity._entityLastLocalDir, direction) > 0.001f;
+				
 				if(posHasChanged || dirHasChanged)
 				{
 					playerEntity._entityLastLocalPos = position;
