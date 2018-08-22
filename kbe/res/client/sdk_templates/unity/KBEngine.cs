@@ -1283,72 +1283,28 @@
 
 			_lastUpdateToServerTime = now - (span - TimeSpan.FromTicks(Convert.ToInt64(_updatePlayerToServerPeroid * _1MS_TO_100NS)));
 			
-			Vector3 position = playerEntity.position;
-			Vector3 direction = playerEntity.direction;
+			Vector3 position = Vector3.zero;
+			Vector3 direction = Vector3.zero;
 			
-			bool posHasChanged = Vector3.Distance(playerEntity._entityLastLocalPos, position) > 0.001f;
-			bool dirHasChanged = Vector3.Distance(playerEntity._entityLastLocalDir, direction) > 0.001f;
+			bool posHasChanged = false;
+			bool dirHasChanged = false;
 			
-			if(posHasChanged || dirHasChanged)
-			{
-				playerEntity._entityLastLocalPos = position;
-				playerEntity._entityLastLocalDir = direction;
-
-				Bundle bundle = Bundle.createObject();
-				bundle.newMessage(Messages.messages["Baseapp_onUpdateDataFromClient"]);
-				bundle.writeFloat(position.x);
-				bundle.writeFloat(position.y);
-				bundle.writeFloat(position.z);
-				
-				double x = ((double)direction.x / 360 * (System.Math.PI * 2));
-				double y = ((double)direction.y / 360 * (System.Math.PI * 2));
-				double z = ((double)direction.z / 360 * (System.Math.PI * 2));
-				
-				// 根据弧度转角度公式会出现负数
-				// unity会自动转化到0~360度之间，这里需要做一个还原
-				if(x - System.Math.PI > 0.0)
-					x -= System.Math.PI * 2;
-
-				if(y - System.Math.PI > 0.0)
-					y -= System.Math.PI * 2;
-				
-				if(z - System.Math.PI > 0.0)
-					z -= System.Math.PI * 2;
-				
-				bundle.writeFloat((float)x);
-				bundle.writeFloat((float)y);
-				bundle.writeFloat((float)z);
-				bundle.writeUint8((Byte)(playerEntity.isOnGround == true ? 1 : 0));
-				bundle.writeUint32(spaceID);
-				bundle.send(_networkInterface);
-			}
-
-			// 开始同步所有被控制了的entity的位置
-			for (int i = 0; i < _controlledEntities.Count; ++i)
-			{
-				var entity = _controlledEntities[i];
-				position = entity.position;
-				direction = entity.direction;
-
-				posHasChanged = Vector3.Distance(entity._entityLastLocalPos, position) > 0.001f;
-				dirHasChanged = Vector3.Distance(entity._entityLastLocalDir, direction) > 0.001f;
-
-				if (posHasChanged || dirHasChanged)
+			if (playerEntity.needSynData) {
+				if(posHasChanged || dirHasChanged)
 				{
-					entity._entityLastLocalPos = position;
-					entity._entityLastLocalDir = direction;
+					playerEntity._entityLastLocalPos = position;
+					playerEntity._entityLastLocalDir = direction;
 
 					Bundle bundle = Bundle.createObject();
-					bundle.newMessage(Messages.messages["Baseapp_onUpdateDataFromClientForControlledEntity"]);
-					bundle.writeInt32(entity.id);
+					bundle.newMessage(Messages.messages["Baseapp_onUpdateDataFromClient"]);
 					bundle.writeFloat(position.x);
 					bundle.writeFloat(position.y);
 					bundle.writeFloat(position.z);
-
+					
 					double x = ((double)direction.x / 360 * (System.Math.PI * 2));
 					double y = ((double)direction.y / 360 * (System.Math.PI * 2));
 					double z = ((double)direction.z / 360 * (System.Math.PI * 2));
-				
+					
 					// 根据弧度转角度公式会出现负数
 					// unity会自动转化到0~360度之间，这里需要做一个还原
 					if(x - System.Math.PI > 0.0)
@@ -1363,9 +1319,57 @@
 					bundle.writeFloat((float)x);
 					bundle.writeFloat((float)y);
 					bundle.writeFloat((float)z);
-					bundle.writeUint8((Byte)(entity.isOnGround == true ? 1 : 0));
+					bundle.writeUint8((Byte)(playerEntity.isOnGround == true ? 1 : 0));
 					bundle.writeUint32(spaceID);
 					bundle.send(_networkInterface);
+				}
+			}
+			
+			// 开始同步所有被控制了的entity的位置
+			for (int i = 0; i < _controlledEntities.Count; ++i)
+			{
+				var entity = _controlledEntities[i];
+				if (entity.needSynData) {
+					position = entity.position;
+					direction = entity.direction;
+
+					posHasChanged = Vector3.Distance(entity._entityLastLocalPos, position) > 0.001f;
+					dirHasChanged = Vector3.Distance(entity._entityLastLocalDir, direction) > 0.001f;
+
+					if (posHasChanged || dirHasChanged)
+					{
+						entity._entityLastLocalPos = position;
+						entity._entityLastLocalDir = direction;
+
+						Bundle bundle = Bundle.createObject();
+						bundle.newMessage(Messages.messages["Baseapp_onUpdateDataFromClientForControlledEntity"]);
+						bundle.writeInt32(entity.id);
+						bundle.writeFloat(position.x);
+						bundle.writeFloat(position.y);
+						bundle.writeFloat(position.z);
+
+						double x = ((double)direction.x / 360 * (System.Math.PI * 2));
+						double y = ((double)direction.y / 360 * (System.Math.PI * 2));
+						double z = ((double)direction.z / 360 * (System.Math.PI * 2));
+					
+						// 根据弧度转角度公式会出现负数
+						// unity会自动转化到0~360度之间，这里需要做一个还原
+						if(x - System.Math.PI > 0.0)
+							x -= System.Math.PI * 2;
+
+						if(y - System.Math.PI > 0.0)
+							y -= System.Math.PI * 2;
+						
+						if(z - System.Math.PI > 0.0)
+							z -= System.Math.PI * 2;
+						
+						bundle.writeFloat((float)x);
+						bundle.writeFloat((float)y);
+						bundle.writeFloat((float)z);
+						bundle.writeUint8((Byte)(entity.isOnGround == true ? 1 : 0));
+						bundle.writeUint32(spaceID);
+						bundle.send(_networkInterface);
+					}
 				}
 			}
 		}

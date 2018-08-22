@@ -37,6 +37,7 @@
 		/// 对于其它entity来说，表示我本机是否控制了这个entity
 		/// </summary>
 		public bool isControlled = false;
+		public bool needSynData = true;
 		
 		// __init__调用之后设置为true
 		public bool inited = false;
