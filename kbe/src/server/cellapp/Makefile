@@ -1,12 +1,15 @@
 BIN  = cellapp
 SRCS =						\
 	all_clients				\
+	ctrl_client             \
+	view_trigger			\
 	view_trigger			\
 	cell					\
 	cells					\
 	cellapp					\
 	cellapp_interface		\
 	clients_remote_entity_method		\
+	clients_remote_entity_method_ctrl		\
 	controller				\
 	controllers				\
 	client_entity			\
