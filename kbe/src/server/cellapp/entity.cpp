@@ -8,6 +8,7 @@
 #include "spacememory.h"
 #include "range_trigger.h"
 #include "all_clients.h"
+#include "ctrl_client.h"
 #include "client_entity.h"
 #include "controllers.h"	
 #include "real_entity_method.h"
@@ -73,6 +74,7 @@ ENTITY_GETSET_DECLARE_BEGIN(Entity)
 SCRIPT_GET_DECLARE("base",							pyGetBaseEntityCall,			0,							0)
 SCRIPT_GET_DECLARE("client",						pyGetClientEntityCall,			0,							0)
 SCRIPT_GET_DECLARE("allClients",					pyGetAllClients,				0,							0)
+SCRIPT_GET_DECLARE("ctrlClient",					pyGetCtrlClient,				0,							0)
 SCRIPT_GET_DECLARE("otherClients",					pyGetOtherClients,				0,							0)
 SCRIPT_GET_DECLARE("isWitnessed",					pyIsWitnessed,					0,							0)
 SCRIPT_GET_DECLARE("hasWitness",					pyHasWitness,					0,							0)
@@ -116,6 +118,7 @@ witnesses_count_(0),
 pWitness_(NULL),
 allClients_(new AllClients(pScriptModule, id, false)),
 otherClients_(new AllClients(pScriptModule, id, true)),
+ctrlClient_(new CtrlClient(pScriptModule, id, 0)),
 pEntityCoordinateNode_(NULL),
 pControllers_(new Controllers(id)),
 pyPositionChangedCallback_(),
@@ -150,6 +153,7 @@ Entity::~Entity()
 	S_RELEASE(baseEntityCall_);
 	S_RELEASE(allClients_);
 	S_RELEASE(otherClients_);
+	S_RELEASE(ctrlClient_);
 	
 	KBE_ASSERT(pWitness_ == NULL);
 
@@ -533,6 +537,9 @@ bool Entity::setControlledBy(EntityCall* controllerBaseEntityCall)
 		}
 	}
 
+	CtrlClient* ctrl_client = ctrlClient();
+	ctrl_client->setControllerId(controllerBaseEntityCall->id());
+
 	return true;
 }
 
@@ -586,6 +593,30 @@ PyObject* Entity::pyGetAllClients()
 	Py_INCREF(clients);
 	return clients; 
 }
+
+PyObject* Entity::pyGetCtrlClient()
+{
+	CtrlClient* client = ctrlClient();
+	if(client == NULL) {
+		S_Return;
+	}
+	Py_INCREF(client);
+	return client;
+}
+
+// CtrlClient* Entity::ctrlClient() {
+// 	if (ctrlClient_ != NULL) {
+// 		return ctrlClient_;
+// 	}
+
+// 	EntityCall* entityCall = controlledBy();
+// 	if(entityCall == NULL)
+// 		return NULL;
+
+// 	ctrlClient_ = new CtrlClient(pScriptModule, id_, entityCall->id());
+// 	return ctrlClient_;
+	
+// }
 
 //-------------------------------------------------------------------------------------
 PyObject* Entity::pyGetOtherClients()

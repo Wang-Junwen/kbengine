@@ -121,6 +121,11 @@ INLINE void Entity::allClients(AllClients* clients)
 	allClients_ = clients;
 }
 
+INLINE CtrlClient* Entity::ctrlClient() const
+{
+	return ctrlClient_;
+}
+
 //-------------------------------------------------------------------------------------
 INLINE void Entity::otherClients(AllClients* clients)
 {

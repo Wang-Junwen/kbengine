@@ -27,6 +27,7 @@ class EntityComponent;
 class Cellapp;
 class Witness;
 class AllClients;
+class CtrlClient;
 class CoordinateSystem;
 class EntityCoordinateNode;
 class Controller;
@@ -129,6 +130,10 @@ public:
 	INLINE AllClients* otherClients() const;
 	DECLARE_PY_GET_MOTHOD(pyGetOtherClients);
 	INLINE void otherClients(AllClients* clients);
+
+	INLINE CtrlClient* ctrlClient() const;
+	DECLARE_PY_GET_MOTHOD(pyGetCtrlClient);
+	// void ctrlClient(CtrlClient* ctrlClient);
 
 	/**
 		脚本获取controlledBy属性
@@ -671,6 +676,8 @@ protected:
 
 	AllClients*												allClients_;
 	AllClients*												otherClients_;
+
+	CtrlClient*                                             ctrlClient_;
 
 	// entity节点
 	EntityCoordinateNode*									pEntityCoordinateNode_;	
