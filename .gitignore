@@ -86,6 +86,10 @@ Thumbs.db
 /kbe/src/lib/dependencies/log4cxx/src/test/resources/witness/encoding/Makefile
 /kbe/src/lib/dependencies/log4cxx/src/test/resources/witness/ndc/Makefile
 /kbe/src/lib/dependencies/log4cxx/src/test/resources/witness/rolling/Makefile
+/kbe/src/lib/dependencies/apr-util/xml/expat/Makefile
+/kbe/src/lib/dependencies/apr/Makefile
+/kbe/src/lib/dependencies/expat/Makefile
+/kbe/src/lib/dependencies/jemalloc/Makefile
 /kbe/src/lib/dependencies/apr-util/.libs/
 /kbe/src/lib/dependencies/apr-util/.make.dirs
 /kbe/src/lib/dependencies/apr-util/apr-util.pc
@@ -173,6 +177,9 @@ Thumbs.db
 /kbe/src/lib/dependencies/log4cxx/src/test/cpp/.deps/
 /kbe/src/lib/dependencies/log4cxx/src/test/cpp/.libs/
 /kbe/src/lib/dependencies/log4cxx/src/test/cpp/testsuite
+/kbe/src/lib/dependencies/log4cxx/Makefile
+/kbe/src/lib/dependencies/log4cxx/src/main/include/log4cxx/log4cxx.h
+/kbe/src/lib/dependencies/log4cxx/src/main/include/log4cxx/private/log4cxx_private.h
 /kbe/src/lib/dependencies/openssl/apps/CA.pl.bak
 /kbe/src/lib/dependencies/openssl/apps/openssl
 /kbe/src/lib/dependencies/openssl/certs/demo/3f77a2b5.0
@@ -299,3 +306,7 @@ Thumbs.db
 /kbe/src/lib/python/python-config
 /kbe/src/lib/python/python-config.py
 /kbe/src/lib/python/python-gdb.py
+
+
+# 编译后有些openssl的一些改变的文件
+/kbe/src/lib/dependencies/openssl/
