@@ -492,6 +492,8 @@ bool Entity::setControlledBy(EntityCall* controllerBaseEntityCall)
 		if (controllerBaseEntityCall != NULL)
 		{
 			controlledBy(controllerBaseEntityCall);
+			ctrlClient_->setControllerId(controllerBaseEntityCall->id());
+			
 
 			// 如果是恢复自我控制，那么需要通知我的客户端：没有人控制你了
 			if (controllerBaseEntityCall->id() == id())
@@ -512,12 +514,14 @@ bool Entity::setControlledBy(EntityCall* controllerBaseEntityCall)
 		else  // NULL表示交由系统控制，所以不需要通知其他人
 		{
 			controlledBy(NULL);
+			ctrlClient_->setControllerId(0);
 		}
 	}
 	else if (controllerBaseEntityCall != NULL)
 	{
 		controlledBy(controllerBaseEntityCall);
-		
+		ctrlClient_->setControllerId(controllerBaseEntityCall->id());
+
 		// 既然有新的控制者了，系统的移动行为也就必须停止了
 		stopMove();
 		
@@ -537,8 +541,8 @@ bool Entity::setControlledBy(EntityCall* controllerBaseEntityCall)
 		}
 	}
 
-	CtrlClient* ctrl_client = ctrlClient();
-	ctrl_client->setControllerId(controllerBaseEntityCall->id());
+	//CtrlClient* ctrl_client = ctrlClient();
+	//ctrl_client->setControllerId(controllerBaseEntityCall->id());
 
 	return true;
 }

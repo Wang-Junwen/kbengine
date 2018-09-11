@@ -72,163 +72,108 @@ PyObject* ClientsRemoteEntityMethodCtrl::callmethod(PyObject* args, PyObject* kw
 	{
 		MemoryStream* mstream = MemoryStream::createPoolObject();
 
-		// // 如果是广播给组件的消息
-		// if (pComponentPropertyDescription_)
-		// {
-		// 	if (pScriptModule_->usePropertyDescrAlias())
-		// 		(*mstream) << pComponentPropertyDescription_->aliasIDAsUint8();
-		// 	else
-		// 		(*mstream) << pComponentPropertyDescription_->getUType();
-		// }
-		// else
-		// {
-		// 	if (pScriptModule_->usePropertyDescrAlias())
-		// 		(*mstream) << (uint8)0;
-		// 	else
-		// 		(*mstream) << (ENTITY_PROPERTY_UID)0;
-		// }
+		// 如果是广播给组件的消息
+		if (pComponentPropertyDescription_)
+		{
+			if (pScriptModule_->usePropertyDescrAlias())
+				(*mstream) << pComponentPropertyDescription_->aliasIDAsUint8();
+			else
+				(*mstream) << pComponentPropertyDescription_->getUType();
+		}
+		else
+		{
+			if (pScriptModule_->usePropertyDescrAlias())
+				(*mstream) << (uint8)0;
+			else
+				(*mstream) << (ENTITY_PROPERTY_UID)0;
+		}
 
 		methodDescription->addToStream(mstream, args);
 
-		// if((pEntity->pWitness() && (pEntity->clientEntityCall())))
-		// {
-		// 	Network::Bundle* pSendBundle = NULL;
-		// 	Network::Channel* pChannel = pEntity->clientEntityCall()->getChannel();
-
-		// 	if (!pChannel)
-		// 		pSendBundle = Network::Bundle::createPoolObject();
-		// 	else
-		// 		pSendBundle = pChannel->createSendBundle();
-
-		// 	pEntity->clientEntityCall()->newCall_((*pSendBundle));
-
-		// 	if(mstream->wpos() > 0)
-		// 		(*pSendBundle).append(mstream->data(), (int)mstream->wpos());
-
-		// 	if(Network::g_trace_packet > 0)
-		// 	{
-		// 		if(Network::g_trace_packet_use_logfile)
-		// 			DebugHelper::getSingleton().changeLogger("packetlogs");
-
-		// 		DEBUG_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod: pushUpdateData: ClientInterface::onRemoteMethodCall({}::{})\n", 
-		// 			pEntity->scriptName(), methodDescription->getName()));
-
-		// 		switch(Network::g_trace_packet)
-		// 		{
-		// 		case 1:
-		// 			mstream->hexlike();
-		// 			break;
-		// 		case 2:
-		// 			mstream->textlike();
-		// 			break;
-		// 		default:
-		// 			mstream->print_storage();
-		// 			break;
-		// 		};
-
-		// 		if(Network::g_trace_packet_use_logfile)	
-		// 			DebugHelper::getSingleton().changeLogger(COMPONENT_NAME_EX(g_componentType));
-		// 	}
-
-		// 	// 记录这个事件产生的数据量大小
-		// 	g_publicClientEventHistoryStats.trackEvent(pEntity->scriptName(),
-		// 		methodDescription->getName(),
-		// 		pSendBundle->currMsgLength(),
-		// 		"::");
-
-		// 	//entityCall->sendCall((*pBundle));
-		// 	pEntity->pWitness()->sendToClient(ClientInterface::onRemoteMethodCall, pSendBundle);
-		// }
-
-		// 广播给其他人
-		// std::list<ENTITY_ID>::const_iterator iter = entities.begin();
-		// for(; iter != entities.end(); ++iter)
-		// {
-			Entity* pViewEntity = Cellapp::getSingleton().findEntity((ctrl_id_));
-			if(pViewEntity == NULL || pViewEntity->pWitness() == NULL || pViewEntity->isDestroyed()) {
-                ERROR_MSG(fmt::format("pViewEntity is NULL or .... id: {}\n", ctrl_id_));
-                S_Return;
-            }
+		Entity* pViewEntity = Cellapp::getSingleton().findEntity((ctrl_id_));
+		if(pViewEntity == NULL || pViewEntity->pWitness() == NULL || pViewEntity->isDestroyed()) {
+            ERROR_MSG(fmt::format("pViewEntity is NULL or .... id: {}\n", ctrl_id_));
+            S_Return;
+        }
             
-			EntityCall* entityCall = pViewEntity->clientEntityCall();
-			if(entityCall == NULL) {
-                ERROR_MSG(fmt::format("entityCall is NULL or .... id: {}\n", ctrl_id_));
-                S_Return;
-            }
+		EntityCall* entityCall = pViewEntity->clientEntityCall();
+		if(entityCall == NULL) {
+            ERROR_MSG(fmt::format("entityCall is NULL or .... id: {}\n", ctrl_id_));
+            S_Return;
+        }
 
-			Network::Channel* pChannel = entityCall->getChannel();
-			if(pChannel == NULL) {
-                ERROR_MSG(fmt::format("pChannel is NULL or .... id: {}\n", ctrl_id_));
-                S_Return;
-            }
+		Network::Channel* pChannel = entityCall->getChannel();
+		if(pChannel == NULL) {
+            ERROR_MSG(fmt::format("pChannel is NULL or .... id: {}\n", ctrl_id_));
+            S_Return;
+        }
 		
 
-			// 这个可能性是存在的，例如数据来源于createWitnessFromStream()
-			// 又如自己的entity还未在目标客户端上创建
-			if (!pViewEntity->pWitness()->entityInView(pEntity->id())) {
-                ERROR_MSG(fmt::format("entityInView false .... id: {}\n", ctrl_id_));
-                S_Return;
-            }
+		// 这个可能性是存在的，例如数据来源于createWitnessFromStream()
+		// 又如自己的entity还未在目标客户端上创建
+		if (!pViewEntity->pWitness()->entityInView(pEntity->id())) {
+            ERROR_MSG(fmt::format("entityInView false .... id: {}\n", ctrl_id_));
+            S_Return;
+        }
 			
-			Network::Bundle* pSendBundle = pChannel->createSendBundle();
-			NETWORK_ENTITY_MESSAGE_FORWARD_CLIENT_BEGIN(pViewEntity->id(), (*pSendBundle));
+		Network::Bundle* pSendBundle = pChannel->createSendBundle();
+		NETWORK_ENTITY_MESSAGE_FORWARD_CLIENT_BEGIN(pViewEntity->id(), (*pSendBundle));
 			
-			int ialiasID = -1;
-			const Network::MessageHandler& msgHandler = 
-			pViewEntity->pWitness()->getViewEntityMessageHandler(ClientInterface::onRemoteMethodCall, 
-					ClientInterface::onRemoteMethodCallOptimized, pEntity->id(), ialiasID);
+		int ialiasID = -1;
+		const Network::MessageHandler& msgHandler = 
+		pViewEntity->pWitness()->getViewEntityMessageHandler(ClientInterface::onRemoteMethodCall, 
+				ClientInterface::onRemoteMethodCallOptimized, pEntity->id(), ialiasID);
 
-			ENTITY_MESSAGE_FORWARD_CLIENT_BEGIN(pSendBundle, msgHandler, viewEntityMessage);
+		ENTITY_MESSAGE_FORWARD_CLIENT_BEGIN(pSendBundle, msgHandler, viewEntityMessage);
 
-			if(ialiasID != -1)
+		if(ialiasID != -1)
+		{
+			KBE_ASSERT(msgHandler.msgID == ClientInterface::onRemoteMethodCallOptimized.msgID);
+			(*pSendBundle)  << (uint8)ialiasID;
+		}
+		else
+		{
+			KBE_ASSERT(msgHandler.msgID == ClientInterface::onRemoteMethodCall.msgID);
+			(*pSendBundle)  << pEntity->id();
+		}
+
+		if(mstream->wpos() > 0)
+			(*pSendBundle).append(mstream->data(), (int)mstream->wpos());
+
+		if(Network::g_trace_packet > 0)
+		{
+			if(Network::g_trace_packet_use_logfile)
+				DebugHelper::getSingleton().changeLogger("packetlogs");
+
+			DEBUG_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod: pushUpdateData: ClientInterface::onRemoteOtherEntityMethodCall({}::{})\n", 
+				pViewEntity->scriptName(), methodDescription->getName()));
+
+			switch(Network::g_trace_packet)	
 			{
-				KBE_ASSERT(msgHandler.msgID == ClientInterface::onRemoteMethodCallOptimized.msgID);
-				(*pSendBundle)  << (uint8)ialiasID;
-			}
-			else
-			{
-				KBE_ASSERT(msgHandler.msgID == ClientInterface::onRemoteMethodCall.msgID);
-				(*pSendBundle)  << pEntity->id();
-			}
+			case 1:
+				mstream->hexlike();
+				break;
+			case 2:
+				mstream->textlike();
+				break;
+			default:
+				mstream->print_storage();
+				break;
+			};
 
-			if(mstream->wpos() > 0)
-				(*pSendBundle).append(mstream->data(), (int)mstream->wpos());
+			if(Network::g_trace_packet_use_logfile)
+				DebugHelper::getSingleton().changeLogger(COMPONENT_NAME_EX(g_componentType));
+		}
 
-			if(Network::g_trace_packet > 0)
-			{
-				if(Network::g_trace_packet_use_logfile)
-					DebugHelper::getSingleton().changeLogger("packetlogs");
+		ENTITY_MESSAGE_FORWARD_CLIENT_END(pSendBundle, msgHandler, viewEntityMessage);
 
-				DEBUG_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod: pushUpdateData: ClientInterface::onRemoteOtherEntityMethodCall({}::{})\n", 
-					pViewEntity->scriptName(), methodDescription->getName()));
+		// 记录这个事件产生的数据量大小
+		g_publicClientEventHistoryStats.trackEvent(pViewEntity->scriptName(), 
+			methodDescription->getName(), 
+			pSendBundle->currMsgLength(), 
+			"::");
 
-				switch(Network::g_trace_packet)	
-				{
-				case 1:
-					mstream->hexlike();
-					break;
-				case 2:
-					mstream->textlike();
-					break;
-				default:
-					mstream->print_storage();
-					break;
-				};
-
-				if(Network::g_trace_packet_use_logfile)
-					DebugHelper::getSingleton().changeLogger(COMPONENT_NAME_EX(g_componentType));
-			}
-
-			ENTITY_MESSAGE_FORWARD_CLIENT_END(pSendBundle, msgHandler, viewEntityMessage);
-
-			// 记录这个事件产生的数据量大小
-			g_publicClientEventHistoryStats.trackEvent(pViewEntity->scriptName(), 
-				methodDescription->getName(), 
-				pSendBundle->currMsgLength(), 
-				"::");
-
-			pViewEntity->pWitness()->sendToClient(ClientInterface::onRemoteMethodCallOptimized, pSendBundle);
-		// }
+		pViewEntity->pWitness()->sendToClient(ClientInterface::onRemoteMethodCallOptimized, pSendBundle);
 
 		MemoryStream::reclaimPoolObject(mstream);
 	}

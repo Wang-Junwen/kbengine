@@ -258,7 +258,7 @@ INLINE void Entity::controlledBy(EntityCall* baseEntityCall)
 	if (controlledBy_)
 		Py_DECREF(controlledBy_);
 
-	controlledBy_ = baseEntityCall;
+	controlledBy_ = baseEntityCall;		
 
 	if (controlledBy_)
 		Py_INCREF(controlledBy_);
