@@ -310,7 +310,7 @@ Thumbs.db
 /kbe/src/lib/dependencies/jemalloc/Makefile
 /kbe/src/lib/dependencies/log4cxx/Makefile
 /kbe/src/lib/dependencies/log4cx
-x/src/main/include/log4cxx/log4cxx.h
+/src/main/include/log4cxx/log4cxx.h
 /kbe/src/lib/dependencies/log4cxx/src/main/include/log4cxx/private/log4cxx_private.h
 /kbe/src/lib/dependencies/openssl/Makefile
 /kbe/src/lib/dependencies/openssl/Makefile.bak
