@@ -92,26 +92,27 @@ PyObject* ClientsRemoteEntityMethodCtrl::callmethod(PyObject* args, PyObject* kw
 
 		Entity* pViewEntity = Cellapp::getSingleton().findEntity((ctrl_id_));
 		if(pViewEntity == NULL || pViewEntity->pWitness() == NULL || pViewEntity->isDestroyed()) {
-            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, pViewEntity is NULL or pWitness is NULL or pViewEntity is destroyed.... ctrl_id: {}\n", ctrl_id_));
+            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, pViewEntity is NULL or pWitness is NULL 
+			or pViewEntity is destroyed.... ctrl_id: {}, self id: {}\n", ctrl_id_, id_));
             S_Return;
         }
             
 		EntityCall* entityCall = pViewEntity->clientEntityCall();
 		if(entityCall == NULL) {
-            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, entityCall is NULL ctrl_id: {}\n", ctrl_id_));
+            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, entityCall is NULL ctrl_id: {}, self id: {}\n", ctrl_id_, id_));
             S_Return;
         }
 
 		Network::Channel* pChannel = entityCall->getChannel();
 		if(pChannel == NULL) {
-            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, pChannel is NULL ctrl_id: {}\n", ctrl_id_));
+            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, pChannel is NULL ctrl_id: {}, self id: {}\n", ctrl_id_, id_));
             S_Return;
         }
 
 		// 这个可能性是存在的，例如数据来源于createWitnessFromStream()
 		// 又如自己的entity还未在目标客户端上创建
 		if (!pViewEntity->pWitness()->entityInView(pEntity->id())) {
-            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, entityInView false ctrl_id: {}\n", ctrl_id_));
+            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, entityInView false ctrl_id: {}, self id: {}\n", ctrl_id_, id_));
             S_Return;
         }
 			
