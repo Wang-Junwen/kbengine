@@ -92,8 +92,7 @@ PyObject* ClientsRemoteEntityMethodCtrl::callmethod(PyObject* args, PyObject* kw
 
 		Entity* pViewEntity = Cellapp::getSingleton().findEntity((ctrl_id_));
 		if(pViewEntity == NULL || pViewEntity->pWitness() == NULL || pViewEntity->isDestroyed()) {
-            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, pViewEntity is NULL or pWitness is NULL 
-			or pViewEntity is destroyed.... ctrl_id: {}, self id: {}\n", ctrl_id_, id_));
+            ERROR_MSG(fmt::format("ClientsRemoteEntityMethodCtrl::callmethod, pViewEntity is NULL or pWitness is NULL or pViewEntity is destroyed.... ctrl_id: {}, self id: {}\n", ctrl_id_, id_));
             S_Return;
         }
             
