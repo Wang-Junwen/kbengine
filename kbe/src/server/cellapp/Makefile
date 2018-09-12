@@ -3,7 +3,6 @@ SRCS =						\
 	all_clients				\
 	ctrl_client             \
 	view_trigger			\
-	view_trigger			\
 	cell					\
 	cells					\
 	cellapp					\
