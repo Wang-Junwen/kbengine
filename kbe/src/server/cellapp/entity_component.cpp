@@ -23,6 +23,7 @@ SCRIPT_GET_DECLARE("base",							pyGetBaseEntityCall,	0,					0)
 SCRIPT_GET_DECLARE("client",						pyGetClientEntityCall,	0,					0)
 SCRIPT_GET_DECLARE("allClients",					pyGetAllClients,		0,					0)
 SCRIPT_GET_DECLARE("otherClients",					pyGetOtherClients,		0,					0)
+SCRIPT_GET_DECLARE("ctrlClient",                    pyGetCtrlClient,        0,                  0)
 SCRIPT_GETSET_DECLARE_END()
 BASE_SCRIPT_INIT(EntityComponent, 0, 0, 0, 0, 0)
 

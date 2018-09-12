@@ -216,6 +216,11 @@ public:
 	DECLARE_PY_GET_MOTHOD(pyGetAllClients);
 
 	/**
+	 * 脚本获取控制者
+	*/
+	DECLARE_PY_GET_MOTHOD(pyGetCtrlClient);
+
+	/**
 		脚本获取entityCall
 	*/
 	DECLARE_PY_GET_MOTHOD(pyGetOtherClients);

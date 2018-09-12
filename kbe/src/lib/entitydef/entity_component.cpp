@@ -1617,6 +1617,31 @@ PyObject* EntityComponent::pyGetOtherClients()
 	return pyObj;
 }
 
+PyObject* EntityComponent::pyGetCtrlClient()
+{
+	PyObject* pEntity = owner();
+	if (!pEntity) 
+	{
+		PyErr_Format(PyExc_AssertionError, "%s: %d is destroyed!\n",
+			scriptName(), ownerID_);
+		PyErr_PrintEx(0);
+		return 0;
+	}
+
+	PyObject* entityCall = PyObject_GetAttrString(pEntity, "ctrlClient");
+	if (!entityCall || entityCall == Py_None)
+	{
+		PyErr_Format(PyExc_AttributeError, "'%s: %d' object has no attribute 'ctrlClient'\n",
+			pEntity->ob_type->tp_name, ownerID_);
+
+		return NULL;
+	}
+
+	PyObject* pyObj = PyObject_GetAttrString(entityCall, pPropertyDescription_->getName());
+	Py_DECREF(entityCall);
+	return pyObj;
+}
+
 //-------------------------------------------------------------------------------------
 PyObject* EntityComponent::pyClientEntity(ENTITY_ID entityID)
 {
