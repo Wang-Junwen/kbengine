@@ -57,6 +57,7 @@ ScriptDefModule* CtrlClientComponent::pComponentScriptDefModule()
 PyObject* CtrlClientComponent::onScriptGetAttribute(PyObject* attr)
 {
 	ENTITY_ID entityID = pCtrlClient_->id();
+	ENTITY_ID ctrlEntityID = pCtrlClient_->ctrl_id();
 
 	Entity* pEntity = Cellapp::getSingleton().findEntity(entityID);
 	if (pEntity == NULL)
@@ -86,8 +87,7 @@ PyObject* CtrlClientComponent::onScriptGetAttribute(PyObject* attr)
 
 	if (pMethodDescription != NULL)
 	{
-        return NULL;
-		//return new ClientsRemoteEntityMethod(pComponentPropertyDescription_, pScriptDefModule, pMethodDescription, false, entityID);
+		return new ClientsRemoteEntityMethodCtrl(pComponentPropertyDescription_, pScriptDefModule, pMethodDescription, entityID, ctrlEntityID);
 	}
 	
 	return ScriptObject::onScriptGetAttribute(attr);

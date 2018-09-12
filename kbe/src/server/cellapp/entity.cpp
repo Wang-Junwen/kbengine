@@ -494,7 +494,6 @@ bool Entity::setControlledBy(EntityCall* controllerBaseEntityCall)
 			controlledBy(controllerBaseEntityCall);
 			ctrlClient_->setControllerId(controllerBaseEntityCall->id());
 			
-
 			// 如果是恢复自我控制，那么需要通知我的客户端：没有人控制你了
 			if (controllerBaseEntityCall->id() == id())
 			{
@@ -540,9 +539,6 @@ bool Entity::setControlledBy(EntityCall* controllerBaseEntityCall)
 			sendControlledByStatusMessage(controllerBaseEntityCall, 1);
 		}
 	}
-
-	//CtrlClient* ctrl_client = ctrlClient();
-	//ctrl_client->setControllerId(controllerBaseEntityCall->id());
 
 	return true;
 }
@@ -607,20 +603,6 @@ PyObject* Entity::pyGetCtrlClient()
 	Py_INCREF(client);
 	return client;
 }
-
-// CtrlClient* Entity::ctrlClient() {
-// 	if (ctrlClient_ != NULL) {
-// 		return ctrlClient_;
-// 	}
-
-// 	EntityCall* entityCall = controlledBy();
-// 	if(entityCall == NULL)
-// 		return NULL;
-
-// 	ctrlClient_ = new CtrlClient(pScriptModule, id_, entityCall->id());
-// 	return ctrlClient_;
-	
-// }
 
 //-------------------------------------------------------------------------------------
 PyObject* Entity::pyGetOtherClients()
@@ -3944,6 +3926,7 @@ void Entity::onRestore()
 bool Entity::_reload(bool fullReload)
 {
 	allClients_->setScriptModule(pScriptModule_);
+	ctrlClient_->setScriptModule(pScriptModule_);
 	return true;
 }
 

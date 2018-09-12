@@ -94,6 +94,7 @@ public:
 		ªÒ»°entityID 
 	*/
 	ENTITY_ID id() const{ return id_; }
+	ENTITY_ID ctrl_id() const{ return ctrl_id_;}
 	void setID(int id){ id_ = id; }
 	DECLARE_PY_GET_MOTHOD(pyGetID);
 

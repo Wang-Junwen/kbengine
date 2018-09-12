@@ -131,9 +131,11 @@ public:
 	DECLARE_PY_GET_MOTHOD(pyGetOtherClients);
 	INLINE void otherClients(AllClients* clients);
 
+	/**
+	 * 控制者的client, controlledBy client
+	 */ 
 	INLINE CtrlClient* ctrlClient() const;
 	DECLARE_PY_GET_MOTHOD(pyGetCtrlClient);
-	// void ctrlClient(CtrlClient* ctrlClient);
 
 	/**
 		脚本获取controlledBy属性
