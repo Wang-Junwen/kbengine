@@ -86,7 +86,7 @@ bool RangeTrigger::install()
 	positiveBoundary_->old_range(range_xz_, range_y_);
 	positiveBoundary_->update();
 
-	if (!positiveBoundary_) {
+	if (positiveBoundary_) {
 		positiveBoundary_->removeFlags(COORDINATE_NODE_FLAG_INSTALLING);
 	}
 
