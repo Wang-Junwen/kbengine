@@ -159,6 +159,12 @@
     <ClCompile Include="space.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ctrl_client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clients_remote_entity_method_ctrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="all_clients.h">
@@ -294,6 +300,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="space.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clients_remote_entity_method_ctrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ctrl_client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
