@@ -27,9 +27,9 @@ ObjectPool<TCPPacketReceiver>& TCPPacketReceiver::ObjPool()
 }
 
 //-------------------------------------------------------------------------------------
-TCPPacketReceiver* TCPPacketReceiver::createPoolObject()
+TCPPacketReceiver* TCPPacketReceiver::createPoolObject(const std::string& logPoint)
 {
-	return _g_objPool.createObject();
+	return _g_objPool.createObject(logPoint);
 }
 
 //-------------------------------------------------------------------------------------
@@ -48,9 +48,9 @@ void TCPPacketReceiver::destroyObjPool()
 }
 
 //-------------------------------------------------------------------------------------
-TCPPacketReceiver::SmartPoolObjectPtr TCPPacketReceiver::createSmartPoolObj()
+TCPPacketReceiver::SmartPoolObjectPtr TCPPacketReceiver::createSmartPoolObj(const std::string& logPoint)
 {
-	return SmartPoolObjectPtr(new SmartPoolObject<TCPPacketReceiver>(ObjPool().createObject(), _g_objPool));
+	return SmartPoolObjectPtr(new SmartPoolObject<TCPPacketReceiver>(ObjPool().createObject(logPoint), _g_objPool));
 }
 
 //-------------------------------------------------------------------------------------
@@ -72,12 +72,12 @@ bool TCPPacketReceiver::processRecv(bool expectingPacket)
 	Channel* pChannel = getChannel();
 	KBE_ASSERT(pChannel != NULL);
 
-	if(pChannel->isCondemn())
+	if(pChannel->condemn() > 0)
 	{
 		return false;
 	}
 
-	TCPPacket* pReceiveWindow = TCPPacket::createPoolObject();
+	TCPPacket* pReceiveWindow = TCPPacket::createPoolObject(OBJECTPOOL_POINT);
 	int len = pReceiveWindow->recvFromEndPoint(*pEndpoint_);
 
 	if (len < 0)
@@ -88,7 +88,7 @@ bool TCPPacketReceiver::processRecv(bool expectingPacket)
 
 		if(rstate == PacketReceiver::RECV_STATE_INTERRUPT)
 		{
-			onGetError(pChannel);
+			onGetError(pChannel, fmt::format("TCPPacketReceiver::processRecv(): error={}\n", kbe_lasterror()));
 			return false;
 		}
 
@@ -97,7 +97,7 @@ bool TCPPacketReceiver::processRecv(bool expectingPacket)
 	else if(len == 0) // 客户端正常退出
 	{
 		TCPPacket::reclaimPoolObject(pReceiveWindow);
-		onGetError(pChannel);
+		onGetError(pChannel, "disconnected");
 		return false;
 	}
 	
@@ -110,9 +110,9 @@ bool TCPPacketReceiver::processRecv(bool expectingPacket)
 }
 
 //-------------------------------------------------------------------------------------
-void TCPPacketReceiver::onGetError(Channel* pChannel)
+void TCPPacketReceiver::onGetError(Channel* pChannel, const std::string& err)
 {
-	pChannel->condemn();
+	pChannel->condemn(err);
 	pChannel->networkInterface().deregisterChannel(pChannel);
 	pChannel->destroy();
 	Network::Channel::reclaimPoolObject(pChannel);
@@ -148,7 +148,7 @@ PacketReceiver::RecvState TCPPacketReceiver::checkSocketErrors(int len, bool exp
 		return RECV_STATE_BREAK;
 	}
 
-#ifdef unix
+#if KBE_PLATFORM == PLATFORM_UNIX
 	if (errno == EAGAIN ||							// 已经无数据可读了
 		errno == ECONNREFUSED ||					// 连接被服务器拒绝
 		errno == EHOSTUNREACH)						// 目的地址不可到达
