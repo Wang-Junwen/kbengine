@@ -70,7 +70,7 @@ PyObject* ClientsRemoteEntityMethodCtrl::callmethod(PyObject* args, PyObject* kw
 	// 先发给自己
 	if(methodDescription->checkArgs(args))
 	{
-		MemoryStream* mstream = MemoryStream::createPoolObject();
+		MemoryStream* mstream = MemoryStream::createPoolObject(OBJECTPOOL_POINT);
 
 		// 如果是广播给组件的消息
 		if (pComponentPropertyDescription_)
