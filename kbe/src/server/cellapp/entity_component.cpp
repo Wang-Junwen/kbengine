@@ -30,9 +30,7 @@ BASE_SCRIPT_INIT(EntityComponent, 0, 0, 0, 0, 0)
 //-------------------------------------------------------------------------------------
 PyObject* EntityComponent::onScriptGetAttribute(PyObject* attr)
 {
-	wchar_t* PyUnicode_AsWideCharStringRet0 = PyUnicode_AsWideCharString(attr, NULL);
-	char* ccattr = strutil::wchar2char(PyUnicode_AsWideCharStringRet0);
-	PyMem_Free(PyUnicode_AsWideCharStringRet0);
+	char* ccattr = PyUnicode_AsUTF8AndSize(attr, NULL);
 
 	if (ownerID_ > 0)
 	{
@@ -47,7 +45,6 @@ PyObject* EntityComponent::onScriptGetAttribute(PyObject* attr)
 
 				if (pMethodDescription)
 				{
-					free(ccattr);
 					return new RealEntityMethod(pPropertyDescription_, pMethodDescription, pOwner);
 				}
 			}
@@ -64,7 +61,6 @@ PyObject* EntityComponent::onScriptGetAttribute(PyObject* attr)
 		}
 	}
 
-	free(ccattr);
 	return ScriptObject::onScriptGetAttribute(attr);
 }
 

@@ -94,6 +94,7 @@ bool EntityDef::finalise(bool isReload)
 		EntityDef::__oldScriptTypeMappingUType.clear();
 	}
 
+	g_scriptUtype = 1;
 	EntityDef::__scriptModules.clear();
 	EntityDef::__scriptTypeMappingUType.clear();
 	g_methodCusUtypes.clear();
@@ -125,10 +126,10 @@ void EntityDef::reload(bool fullReload)
 		}
 
 		bool ret = finalise(true);
-		KBE_ASSERT(ret && "EntityDef::reload: finalise is error!");
+		KBE_ASSERT(ret && "EntityDef::reload: finalise error!");
 
 		ret = initialize(EntityDef::__scriptBaseTypes, EntityDef::__loadComponentType);
-		KBE_ASSERT(ret && "EntityDef::reload: initialize is error!");
+		KBE_ASSERT(ret && "EntityDef::reload: initialize error!");
 	}
 	else
 	{
