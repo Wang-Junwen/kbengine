@@ -32,25 +32,25 @@ namespace KBEngine
 		public static void INFO_MSG(object s)
 		{
 			if (DEBUGLEVEL.INFO >= debugLevel)
-				Debug.Log(getHead() + s);
+				HDebug.Log(getHead() + s);
 		}
 
 		public static void DEBUG_MSG(object s)
 		{
 			if (DEBUGLEVEL.DEBUG >= debugLevel)
-				Debug.Log(getHead() + s);
+				HDebug.Log(getHead() + s);
 		}
 
 		public static void WARNING_MSG(object s)
 		{
 			if (DEBUGLEVEL.WARNING >= debugLevel)
-				Debug.LogWarning(getHead() + s);
+				HDebug.LogWarning(getHead() + s);
 		}
 
 		public static void ERROR_MSG(object s)
 		{
 			if (DEBUGLEVEL.ERROR >= debugLevel)
-				Debug.LogError(getHead() + s);
+				HDebug.LogError(getHead() + s);
 		}
 
 		public static void profileStart(string name)
