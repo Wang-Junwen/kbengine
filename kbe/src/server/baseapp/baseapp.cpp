@@ -2555,6 +2555,81 @@ void Baseapp::createCellEntityInNewSpace(Entity* pEntity, PyObject* pyCellappInd
 	ERROR_MSG("Baseapp::createCellEntityInNewSpace: not found cellappmgr.\n");
 }
 
+
+//-------------------------------------------------------------------------------------
+void Baseapp::createCellEntityInNewSpaceByCid(Entity* pEntity, PyObject* pyCid)
+{
+	ScriptDefModule* pScriptModule = pEntity->pScriptModule();
+	if (!pScriptModule || !pScriptModule->hasCell())
+	{
+		ERROR_MSG(fmt::format("{}::createCellEntityInNewSpaceByCid: cannot find the cellapp script({})!\n",
+			pScriptModule->getName(), pScriptModule->getName()));
+
+		return;
+	}
+
+	uint64 targetCid = 0;
+	if (PyLong_Check(pyCid))
+	{
+		targetCid = (uint64)PyLong_AsUnsignedLong(pyCid);
+	}
+
+	ENTITY_ID id = pEntity->id();
+	std::string entityType = pEntity->ob_type->tp_name;
+
+	Network::Bundle* pBundle = Network::Bundle::createPoolObject(OBJECTPOOL_POINT);
+
+	(*pBundle).newMessage(CellappmgrInterface::reqCreateCellEntityInNewSpaceByCid);
+
+	(*pBundle) << entityType;
+	(*pBundle) << id;
+	(*pBundle) << targetCid;
+	(*pBundle) << componentID_;
+
+	EntityCall* clientEntityCall = pEntity->clientEntityCall();
+	bool hasClient = (clientEntityCall != NULL);
+	(*pBundle) << hasClient;
+
+	MemoryStream* s = MemoryStream::createPoolObject(OBJECTPOOL_POINT);
+
+	try
+	{
+		pEntity->addCellDataToStream(CELLAPP_TYPE, ED_FLAG_ALL, s);
+	}
+	catch(MemoryStreamWriteOverflow & err)
+	{
+		ERROR_MSG(fmt::format("{}::createCellEntityInNewSpaceByCid({}): {}\n",
+			pEntity->scriptName(), pEntity->id(), err.what()));
+
+		MemoryStream::reclaimPoolObject(s);
+		Network::Bundle::reclaimPoolObject(pBundle);
+		return;
+	}
+
+	(*pBundle).append(*s);
+	MemoryStream::reclaimPoolObject(s);
+
+	Components::ComponentInfos* pComponents = Components::getSingleton().getCellappmgr();
+	if(pComponents)
+	{
+		if(pComponents->pChannel != NULL)
+		{
+			pComponents->pChannel->send(pBundle);
+		}
+		else
+		{
+			ERROR_MSG("Baseapp::createCellEntityInNewSpaceByCid: cellappmgr channel is NULL.\n");
+			Network::Bundle::reclaimPoolObject(pBundle);
+		}
+
+		return;
+	}
+
+	Network::Bundle::reclaimPoolObject(pBundle);
+	ERROR_MSG("Baseapp::createCellEntityInNewSpaceByCid: not found cellappmgr.\n");
+}
+
+
 //-------------------------------------------------------------------------------------
 void Baseapp::restoreSpaceInCell(Entity* pEntity)
 {

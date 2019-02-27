@@ -426,6 +426,11 @@ void Cellappmgr::reqCreateCellEntityInNewSpaceByCid(Network::Channel* pChannel, 
 	if (cinfos == NULL || cinfos->pChannel == NULL || cinfos->state != COMPONENT_STATE_RUN)
 	{
 		WARNING_MSG("Cellappmgr::reqCreateCellEntityInNewSpaceByCid: not found cellapp, message is buffered.\n");
+		ForwardItem* pFI = new AppForwardItem();
+		pFI->pHandler = NULL;
+		pFI->pBundle = pBundle;
+		
+		forward_cellapp_messagebuffer_.push(targetCid, pFI);
 		return;
 	}
 	else
