@@ -25,6 +25,7 @@ namespace KBEngine{
 ENTITY_METHOD_DECLARE_BEGIN(Baseapp, Entity)
 SCRIPT_METHOD_DECLARE("createCellEntity",				createCellEntity,				METH_VARARGS,			0)
 SCRIPT_METHOD_DECLARE("createCellEntityInNewSpace",		createCellEntityInNewSpace,		METH_VARARGS,			0)
+SCRIPT_METHOD_DECLARE("createCellEntityInNewSpaceByCid", createCellEntityInNewSpaceByCid, METH_VARARGS,         0)
 SCRIPT_METHOD_DECLARE("destroyCellEntity",				pyDestroyCellEntity,			METH_VARARGS,			0)
 SCRIPT_METHOD_DECLARE("teleport",						pyTeleport,						METH_VARARGS,			0)
 ENTITY_METHOD_DECLARE_END()
@@ -1501,6 +1502,32 @@ PyObject* Entity::createCellEntityInNewSpace(PyObject* args)
 
 	createdSpace_ = true;
 	Baseapp::getSingleton().createCellEntityInNewSpace(this, args);
+	S_Return;
+}
+
+
+//-------------------------------------------------------------------------------------
+PyObject* Entity::createCellEntityInNewSpaceByCid(PyObject* args)
+{
+	if(isDestroyed())
+	{
+		PyErr_Format(PyExc_AssertionError, "%s::createCellEntityInNewSpaceByCid: %d is destroyed!\n",
+			scriptName(), id());
+		PyErr_PrintEx(0);
+		return 0;
+	}
+
+	if(createdSpace_ || this->cellEntityCall() != NULL)
+	{
+		PyErr_Format(PyExc_AssertionError, "%s::createCellEntityInNewSpaceByCid: %d in space!\n", 
+			scriptName(), id());
+
+		PyErr_PrintEx(0);
+		return 0;
+	}
+
+	createdSpace_ = true;
+	Baseapp::getSingleton().createCellEntityInNewSpaceByCid(this, args);
 	S_Return;
 }
 

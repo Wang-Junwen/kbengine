@@ -135,6 +135,11 @@ public:
 	void createCellEntityInNewSpace(Entity* pEntity, PyObject* pyCellappIndex);
 
 	/**
+	 * 指定cell cid 创建新的space
+	*/
+	void createCellEntityInNewSpaceByCid(Entity* pEntity, PyObject* pyCid);
+
+	/**
 		恢复一个space 
 	*/
 	void restoreSpaceInCell(Entity* pEntity);

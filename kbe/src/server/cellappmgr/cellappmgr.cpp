@@ -54,6 +54,8 @@ public:
 	}
 };
 
+SPACE_ID Cellappmgr::staticSpaceID = 1;
+
 //-------------------------------------------------------------------------------------
 Cellappmgr::Cellappmgr(Network::EventDispatcher& dispatcher, 
 			 Network::NetworkInterface& ninterface, 
@@ -325,13 +327,13 @@ void Cellappmgr::reqCreateCellEntityInNewSpace(Network::Channel* pChannel, Memor
 	s >> componentID;
 	s >> hasClient;
 
-	static SPACE_ID spaceID = 1;
+	// static SPACE_ID spaceID = 1;
 
 	Network::Bundle* pBundle = Network::Bundle::createPoolObject(OBJECTPOOL_POINT);
 	(*pBundle).newMessage(CellappInterface::onCreateCellEntityInNewSpaceFromBaseapp);
 	(*pBundle) << entityType;
 	(*pBundle) << id;
-	(*pBundle) << spaceID++;
+	(*pBundle) << staticSpaceID++;
 	(*pBundle) << componentID;
 	(*pBundle) << hasClient;
 
@@ -391,6 +393,56 @@ void Cellappmgr::reqCreateCellEntityInNewSpace(Network::Channel* pChannel, Memor
 		cellapp_iter->second.incNumEntities();
 	}
 }
+
+
+//-------------------------------------------------------------------------------------
+void Cellappmgr::reqCreateCellEntityInNewSpaceByCid(Network::Channel* pChannel, MemoryStream& s)
+{
+	std::string entityType;
+	ENTITY_ID id;
+	COMPONENT_ID componentID;
+	bool hasClient;
+
+	uint64 targetCid = 0;
+
+	s >> entityType;
+	s >> id;
+	s >> targetCid;
+	s >> componentID;
+	s >> hasClient;
+
+	Network::Bundle* pBundle = Network::Bundle::createPoolObject(OBJECTPOOL_POINT);
+	(*pBundle).newMessage(CellappInterface::onCreateCellEntityInNewSpaceFromBaseapp);
+	(*pBundle) << entityType;
+	(*pBundle) << id;
+	(*pBundle) << staticSpaceID++;
+	(*pBundle) << componentID;
+	(*pBundle) << hasClient;
+
+	(*pBundle).append(&s);
+	s.done();
+
+	Components::ComponentInfos* cinfos = Components::getSingleton().findComponent(CELLAPP_TYPE, targetCid);
+	if (cinfos == NULL || cinfos->pChannel == NULL || cinfos->state != COMPONENT_STATE_RUN)
+	{
+		WARNING_MSG("Cellappmgr::reqCreateCellEntityInNewSpaceByCid: not found cellapp, message is buffered.\n");
+		return;
+	}
+	else
+	{
+		cinfos->pChannel->send(pBundle);
+	}
+	std::map< COMPONENT_ID, Cellapp >::iterator cellapp_iter = cellapps_.find(targetCid);
+	DEBUG_MSG(fmt::format("Cellappmgr::reqCreateCellEntityInNewSpaceByCid: entityType={}, entityID={}, componentID={}, cellapp(cid={}, load={}, numEntities={}).\n",
+		entityType, id, componentID, targetCid, cellapp_iter->second.load(), cellapp_iter->second.numEntities()));
+
+	if (cellapp_iter != cellapps_.end())
+	{
+		cellapp_iter->second.incNumEntities();
+	}
+}
+
+
 
 //-------------------------------------------------------------------------------------
 void Cellappmgr::reqRestoreSpaceInCell(Network::Channel* pChannel, MemoryStream& s) 

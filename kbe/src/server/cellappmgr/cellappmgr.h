@@ -55,6 +55,8 @@ public:
 	*/
 	void reqCreateCellEntityInNewSpace(Network::Channel* pChannel, MemoryStream& s);
 
+	void reqCreateCellEntityInNewSpaceByCid(Network::Channel* pChannel, MemoryStream& s);
+
 	/** 网络接口
 		baseEntity请求创建在一个新的space中
 	*/
@@ -126,6 +128,9 @@ protected:
 
 	// 通过工具查看space
 	SpaceViewers						spaceViewers_;
+private:
+	static SPACE_ID staticSpaceID;
+
 };
 
 } 

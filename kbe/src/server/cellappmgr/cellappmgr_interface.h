@@ -54,6 +54,9 @@ NETWORK_INTERFACE_DECLARE_BEGIN(CellappmgrInterface)
 
 	// baseEntity请求创建在一个新的space中。
 	CELLAPPMGR_MESSAGE_DECLARE_STREAM(reqCreateCellEntityInNewSpace,		NETWORK_VARIABLE_MESSAGE)
+	
+	// baseEntity指定cid创建新space
+	CELLAPPMGR_MESSAGE_DECLARE_STREAM(reqCreateCellEntityInNewSpaceByCid,		NETWORK_VARIABLE_MESSAGE)
 
 	// baseEntity请求恢复在一个新的space中。
 	CELLAPPMGR_MESSAGE_DECLARE_STREAM(reqRestoreSpaceInCell,				NETWORK_VARIABLE_MESSAGE)

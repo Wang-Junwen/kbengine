@@ -197,6 +197,8 @@ public:
 	*/
 	DECLARE_PY_MOTHOD_ARG1(createCellEntityInNewSpace, PyObject_ptr);
 
+	DECLARE_PY_MOTHOD_ARG1(createCellEntityInNewSpaceByCid, PyObject_ptr);
+
 	/** 网络接口
 		客户端直接发送消息给cell实体
 	*/
