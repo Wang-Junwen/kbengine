@@ -316,7 +316,7 @@ Thumbs.db
 /kbe/src/lib/dependencies/openssl/Makefile.bak
 /kbe/src/lib/dependencies/openssl/apps/md4.c
 /kbe/src/lib/dependencies/openssl/
-
+/kbe/src/lib/dependencies
 
 /kbe/src/.vs/
 /kbe/src/lib/python/python.exe-gdb.py
