@@ -32,9 +32,9 @@ class ComponentInfo(object):
         """
         """
         self.entities = 0  # KBEngine.Entity数量
-        self.clients = 0  # 客户�?数量
+        self.clients = 0  # 客户端数量
         self.proxies = 0  # KBEngine.Proxy实例数量
-        self.consolePort = 0  # 控制台�??�?
+        self.consolePort = 0  # 控制台端口
         self.genuuid_sections = 0  # --gus
 
         reader = MessageStream.MessageStreamReader(streamStr)
@@ -153,7 +153,7 @@ class Machines:
 
     def send(self, msg, ip="<broadcast>"):
         """
-        发送消�?
+        发送消息
         """
         _udp_broadcast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         _udp_broadcast_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,
@@ -172,7 +172,7 @@ class Machines:
     def sendAndReceive(self, msg, ip="<broadcast>", trycount=0, timeout=1,
                        callback=None):
         """
-        发送消�?，并等待消息返回
+        发送消息，并等待消息返回
         """
         self.send(msg, ip)
 
@@ -219,7 +219,7 @@ class Machines:
         """
         """
         self.reset()
-        nameLen = len(self.username) + 1  # �?1�?为了存放空终结�??
+        nameLen = len(self.username) + 1
 
         msg = MessageStream.MessageStreamWriter(
             MachineInterface_onQueryAllInterfaceInfos)
@@ -234,7 +234,7 @@ class Machines:
         """
         """
         self.reset()
-        nameLen = len(self.username) + 1  # �?1�?为了产生空终结�??
+        nameLen = len(self.username) + 1
 
         msg = MessageStream.MessageStreamWriter(
             MachineInterface_onQueryMachines)
@@ -331,19 +331,19 @@ class Machines:
             self.interfaces_groups[machineID] = gourps
             self.interfaces_groups_uid[machineID] = []
 
-        # 如果pid与machineID相等，�?�明这个是machine进程
+        # 如果pid与machineID相等，表明这个是machine进程
         if cinfo.pid != machineID:
             gourps.append(cinfo)
             if cinfo.uid not in self.interfaces_groups_uid[machineID]:
                 self.interfaces_groups_uid[machineID].append(cinfo.uid)
         else:
-            # 是machine进程，把它放在最前面，并且加到machines列表�?
+            # 是machine进程，把它放在最前面，并且加到machines列表
             gourps.insert(0, cinfo)
             self.machines.append(cinfo)
 
     def makeGUS(self, componentType):
         """
-        生成一�?相�?�唯一的gus（非全局�?一�?
+        生成全局唯一gus
         """
         if not hasattr(self, "ct2gus"):
             self.ct2gus = [0] * Define.COMPONENT_END_TYPE
@@ -353,7 +353,7 @@ class Machines:
 
     def makeCID(self, componentType):
         """
-        生成相�?�唯一的cid（非全局�?一�?
+        生成全局唯一 cid
         """
         if not hasattr(self, "cidRand"):
             self.cidRand = random.randint(1, 99999)
@@ -386,6 +386,6 @@ class Machines:
 
     def getComponentInfos(self, componentType):
         """
-        获取某一类型的组件信�?
+        获取某一类型的组件信息
         """
         return self.interfaces.get(componentType, [])
