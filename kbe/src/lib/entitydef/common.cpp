@@ -90,6 +90,13 @@ std::pair<std::wstring, std::wstring> getComponentPythonPaths(COMPONENT_TYPE com
 	pyPaths += user_scripts_path + L"data;";
 	pyPaths += user_scripts_path + L"user_type;";
 
+	char* env_sys_path = getenv("PYTHON_SYS_PATH");
+	if (env_sys_path != NULL)
+	{
+		std::wstring define_sys_path = KBEngine::strutil::char2wchar(env_sys_path);
+		pyPaths += define_sys_path + L";";
+	}
+
 	switch (componentType)
 	{
 	case BASEAPP_TYPE:
