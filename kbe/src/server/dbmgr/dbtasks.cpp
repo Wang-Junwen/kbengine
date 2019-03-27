@@ -746,7 +746,9 @@ bool DBTaskCreateAccount::writeAccount(DBInterface* pdbi, const std::string& acc
 	info.email = accountName + "@0.0";
 	info.password = passwd;
 	info.dbid = entityDBID;
-	info.datas = datas;
+	// info.datas = datas;
+	// set bindata empty
+	info.datas = "";
 	
 	if(!hasset)
 	{
