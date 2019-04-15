@@ -197,7 +197,7 @@ REATTEMPT:
 	/**
 		线程启动一次在未改变到闲置状态下连续执行的任务计数
 	*/
-	void reset_done_tasks(){ done_tasks_ = 0; }
+	void reset_done_tasks(){ done_tasks_ = 0; }   
 	void inc_done_tasks(){ ++done_tasks_; }
 
 protected:
