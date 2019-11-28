@@ -8,7 +8,7 @@ using KBEngine;
 	在这个入口中安装了需要监听的事件(installEvents)，同时初始化KBEngine(initKBEngine)
 */
 	
-public class KBEMain : MonoBehaviour 
+public class KBEMain
 {
 	public KBEngineApp gameapp = null;
 	
@@ -17,8 +17,8 @@ public class KBEMain : MonoBehaviour
 	public bool isMultiThreads = false;
 	public string ip = "127.0.0.1";
 	public int port = @{KBE_LOGIN_PORT};
-	public KBEngineApp.CLIENT_TYPE clientType = KBEngineApp.CLIENT_TYPE.CLIENT_TYPE_MINI;
-	public KBEngineApp.NETWORK_ENCRYPT_TYPE networkEncryptType = KBEngineApp.NETWORK_ENCRYPT_TYPE.ENCRYPT_TYPE_NONE;
+	public CLIENT_TYPE clientType = CLIENT_TYPE.CLIENT_TYPE_MINI;
+	public NETWORK_ENCRYPT_TYPE networkEncryptType = NETWORK_ENCRYPT_TYPE.ENCRYPT_TYPE_NONE;
 	public int syncPlayerMS = 1000 / @{KBE_UPDATEHZ};
 
 	public int threadUpdateHZ = @{KBE_UPDATEHZ} * 2;
@@ -33,13 +33,12 @@ public class KBEMain : MonoBehaviour
 
 	public bool automaticallyUpdateSDK = true;
 
-	protected virtual void Awake() 
+	public virtual void Awake() 
 	 {
-		DontDestroyOnLoad(transform.gameObject);
 	 }
  
 	// Use this for initialization
-	protected virtual void Start () 
+	public virtual void Start () 
 	{
 		MonoBehaviour.print("clientapp::start()");
 		installEvents();
@@ -55,16 +54,16 @@ public class KBEMain : MonoBehaviour
 	public void onVersionNotMatch(string verInfo, string serVerInfo)
 	{
 #if UNITY_EDITOR
-		if(automaticallyUpdateSDK)
-			gameObject.AddComponent<ClientSDKUpdater>();
+		//if(automaticallyUpdateSDK)
+			//gameObject.AddComponent<ClientSDKUpdater>();
 #endif
 	}
 
 	public void onScriptVersionNotMatch(string verInfo, string serVerInfo)
 	{
 #if UNITY_EDITOR
-		if(automaticallyUpdateSDK)
-			gameObject.AddComponent<ClientSDKUpdater>();
+		//if(automaticallyUpdateSDK)
+			//gameObject.AddComponent<ClientSDKUpdater>();
 #endif
 	}
 
@@ -87,12 +86,12 @@ public class KBEMain : MonoBehaviour
 		args.isOnInitCallPropertysSetMethods = isOnInitCallPropertysSetMethods;
 		args.forceDisableUDP = forceDisableUDP;
 
-		args.TCP_SEND_BUFFER_MAX = (UInt32)TCP_SEND_BUFFER_MAX;
-		args.TCP_RECV_BUFFER_MAX = (UInt32)TCP_RECV_BUFFER_MAX;
-		args.UDP_SEND_BUFFER_MAX = (UInt32)UDP_SEND_BUFFER_MAX;
-		args.UDP_RECV_BUFFER_MAX = (UInt32)UDP_RECV_BUFFER_MAX;
+		KBEngineArgs.TCP_SEND_BUFFER_MAX = (UInt32)TCP_SEND_BUFFER_MAX;
+		KBEngineArgs.TCP_RECV_BUFFER_MAX = (UInt32)TCP_RECV_BUFFER_MAX;
+		KBEngineArgs.UDP_SEND_BUFFER_MAX = (UInt32)UDP_SEND_BUFFER_MAX;
+		KBEngineArgs.UDP_RECV_BUFFER_MAX = (UInt32)UDP_RECV_BUFFER_MAX;
 
-		args.isMultiThreads = isMultiThreads;
+		args.isMultiThreads = false;
 		
 		if(isMultiThreads)
 			gameapp = new KBEngineAppThread(args);
@@ -100,7 +99,7 @@ public class KBEMain : MonoBehaviour
 			gameapp = new KBEngineApp(args);
 	}
 	
-	protected virtual void OnDestroy()
+	public virtual void OnDestroy()
 	{
 		MonoBehaviour.print("clientapp::OnDestroy(): begin");
         if (KBEngineApp.app != null)
@@ -112,7 +111,7 @@ public class KBEMain : MonoBehaviour
 		MonoBehaviour.print("clientapp::OnDestroy(): end");
 	}
 	
-	protected virtual void FixedUpdate () 
+	public virtual void FixedUpdate () 
 	{
 		KBEUpdate();
 	}

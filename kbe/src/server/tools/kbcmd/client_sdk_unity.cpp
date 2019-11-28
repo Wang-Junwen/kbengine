@@ -224,7 +224,8 @@ bool ClientSDKUnity::writeEngineMessagesModuleBegin()
 	sourcefileBody_ = headerBody;
 	strutil::kbe_replace(sourcefileBody_, "#REPLACE#", "");
 
-	sourcefileBody_ += "namespace KBEngine\n{\n";
+	sourcefileBody_ += "using KBEngine;\n";
+	sourcefileBody_ += "namespace KBEngineMessage\n{\n";
 	sourcefileBody_ += "\tusing UnityEngine;\n";
 	sourcefileBody_ += "\tusing System;\n";
 	sourcefileBody_ += "\tusing System.Collections;\n";

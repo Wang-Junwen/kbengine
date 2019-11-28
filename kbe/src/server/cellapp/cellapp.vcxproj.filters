@@ -302,10 +302,10 @@
     <ClInclude Include="space.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="clients_remote_entity_method_ctrl.h">
+    <ClInclude Include="ctrl_client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ctrl_client.h">
+    <ClInclude Include="clients_remote_entity_method_ctrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
