@@ -33,18 +33,11 @@
 		{
 			name = modulename;
 
-			foreach (System.Reflection.Assembly ass in AppDomain.CurrentDomain.GetAssemblies()) 
-			{
-				entityScript = ass.GetType("KBEngine." + modulename);
-				if(entityScript == null)
-				{
-					entityScript = ass.GetType(modulename);
-				}
-
-				if(entityScript != null)
-					break;
-			}
-
+			entityScript = wxb.hotMgr.appdomain.GetType("KBEngine." + modulename).ReflectionType;
+            if (entityScript == null) {
+                entityScript = wxb.hotMgr.appdomain.GetType(modulename).ReflectionType;
+            }
+			
 			usePropertyDescrAlias = false;
 			useMethodDescrAlias = false;
 
