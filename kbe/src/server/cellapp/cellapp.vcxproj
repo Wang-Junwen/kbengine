@@ -211,6 +211,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\lib\dependencies\openssl\include\openssl\applink.c" />
     <ClCompile Include="all_clients.cpp" />
+    <ClCompile Include="clients_remote_entity_method_ctrl.cpp" />
+    <ClCompile Include="ctrl_client.cpp" />
     <ClCompile Include="entity_component.cpp" />
     <ClCompile Include="space.cpp" />
     <ClCompile Include="view_trigger.cpp" />
@@ -259,6 +261,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="all_clients.h" />
+    <ClInclude Include="clients_remote_entity_method_ctrl.h" />
+    <ClInclude Include="ctrl_client.h" />
     <ClInclude Include="space.h" />
     <ClInclude Include="view_trigger.h" />
     <ClInclude Include="cell.h" />

@@ -32,39 +32,6 @@
 		// 客户端的类别
 		// http://www.kbengine.org/docs/programming/clientsdkprogramming.html
 		// http://www.kbengine.org/cn/docs/programming/clientsdkprogramming.html
-		public enum CLIENT_TYPE
-		{
-			// Mobile(Phone, Pad)
-			CLIENT_TYPE_MOBILE				= 1,
-
-			// Windows Application program
-			CLIENT_TYPE_WIN					= 2,
-
-			// Linux Application program
-			CLIENT_TYPE_LINUX				= 3,
-				
-			// Mac Application program
-			CLIENT_TYPE_MAC					= 4,
-				
-			// Web，HTML5，Flash
-			CLIENT_TYPE_BROWSER				= 5,
-
-			// bots
-			CLIENT_TYPE_BOTS				= 6,
-
-			// Mini-Client
-			CLIENT_TYPE_MINI				= 7,
-		};
-
-		//加密通信类型
-		public enum NETWORK_ENCRYPT_TYPE
-		{
-			//无加密
-			ENCRYPT_TYPE_NONE = 0,
-
-			//Blowfish
-			ENCRYPT_TYPE_BLOWFISH = 1,
-		};
 
 		public string username = "kbengine";
 		public string password = "123456";

@@ -224,7 +224,8 @@ bool ClientSDKUnity::writeEngineMessagesModuleBegin()
 	sourcefileBody_ = headerBody;
 	strutil::kbe_replace(sourcefileBody_, "#REPLACE#", "");
 
-	sourcefileBody_ += "namespace KBEngine\n{\n";
+	sourcefileBody_ += "using KBEngine;\n";
+	sourcefileBody_ += "namespace KBEngineMessage\n{\n";
 	sourcefileBody_ += "\tusing UnityEngine;\n";
 	sourcefileBody_ += "\tusing System;\n";
 	sourcefileBody_ += "\tusing System.Collections;\n";
@@ -1850,8 +1851,8 @@ bool ClientSDKUnity::writeEntityProcessMessagesMethod(ScriptDefModule* pEntitySc
 
 			EntityComponentType * pEntityComponentType = (EntityComponentType*)pPropertyDescription->getDataType();
 
-			sourcefileBody_ += fmt::format("\t\t\tforeach (System.Reflection.Assembly ass in AppDomain.CurrentDomain.GetAssemblies())\n\t\t\t{{\n");
-			sourcefileBody_ += fmt::format("\t\t\t\tType entityComponentScript = ass.GetType(\"KBEngine.{}\");\n", pEntityComponentType->pScriptDefModule()->getName());
+			sourcefileBody_ += fmt::format("\t\t\t{{\n");
+			sourcefileBody_ += fmt::format("\t\t\t\tType entityComponentScript = typeof({});\n", pEntityComponentType->pScriptDefModule()->getName());
 			sourcefileBody_ += fmt::format("\t\t\t\tif(entityComponentScript != null)\n\t\t\t\t{{\n");
 			sourcefileBody_ += fmt::format("\t\t\t\t\t{} = ({}{})Activator.CreateInstance(entityComponentScript);\n", pPropertyDescription->getName(), pEntityComponentType->pScriptDefModule()->getName(), moduleSuffix);
 			sourcefileBody_ += fmt::format("\t\t\t\t\t{}.owner = this;\n", pPropertyDescription->getName());
